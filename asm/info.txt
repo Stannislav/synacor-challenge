@@ -1,0 +1,9 @@
+The asm-program above is an attempt to simulate the teleporter check.
+
+ASM ressrouces:
+
+http://www.cs.virginia.edu/~evans/cs216/guides/x86.html
+http://www.eecg.toronto.edu/~amza/www.mindsec.com/files/x86regs.html
+http://stackoverflow.com/questions/5649/x86-assembly-on-a-mac
+http://peter.michaux.ca/articles/assembly-hello-world-for-os-x
+https://en.wikibooks.org/wiki/X86_Assembly
