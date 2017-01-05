@@ -52,7 +52,7 @@ class Synacor_VM():
     def cr7nat(self, r0=4, r1=1):
         self.reg[0] = r0
         self.reg[1] = r1
-        self.reg[7] = self.eighth_register
+        self.reg[7] = self.reg[7]
         self.ptr = 6027
         self.run()
         return self.reg[0]
@@ -63,11 +63,11 @@ class Synacor_VM():
             if r1:
                 return self.cr7(r0-1, self.cr7(r0, r1-1))
             else:
-                return self.cr7(r0-1, self.eighth_register)
+                return self.cr7(r0-1, self.reg[7])
         else:
             return r1+1
 
-    def find_r7():
+    def find_r7(self):
     # Thanks to github.com/NiXXeD for the cache implementation
         def cr7cache(r7):
             cache = {}
@@ -79,11 +79,17 @@ class Synacor_VM():
                     cache[(r0, r1)] = cache[(r0-1, cache[(r0, r1-1)] % (1<<15))]
             return cache[(4, 1)]
 
+        print("Starting brute-force search for correct r7...")
+        perc = [int((1<<15)/100*(i+1)) for i in range(100)]
         for r7 in range(1<<15):
-            print(r7)
+            if r7 in perc:
+                print("{}% ({}/{})".format((perc.index(r7)+1), r7, 1<<15))
             c = cr7cache(r7)
             if c == 6:
+                print("Found! Returning")
                 return r7
+        print("Nothing found.")
+        return None
 
     def decode_str_at(self, sptr, x): # = mem[1458]
         # Strings in the synacor challange are encoded with
@@ -296,11 +302,11 @@ class Synacor_VM():
                     raise
 
 def test_r7_checks(vm):
-    tmp = vm.eighth_register
-    vm.eighth_register = 7
+    tmp = vm.reg[7]
+    vm.reg[7] = 7
     print(vm.cr7nat(r0=3, r1=1))
     print(vm.cr7(r0=3, r1=1))
-    vm.eighth_register = tmp
+    vm.reg[7] = tmp
 
 if __name__ == '__main__':
     vm = Synacor_VM("bin/challenge.bin", ROFF = (1<<15), NREG = 8, r7 = 25734)
