@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
+
 class Synacor_VM():
-    def __init__(self, progfile, ROFF=(1<<15), NREG=8, r7=0):
-        self.ROFF = ROFF # address of reg0
+    def __init__(self, progfile, ROFF=(1 << 15), NREG=8, r7=0):
+        self.ROFF = ROFF  # address of reg0
         self.NREG = NREG
         self.stack = []
-        self.reg = [0]*NREG
-        self.mem = [0]*ROFF
+        self.reg = [0] * NREG
+        self.mem = [0] * ROFF
         self.ptr = 0
         self.running = False
         self.buffer = ""
@@ -20,9 +21,9 @@ class Synacor_VM():
     def load_file(self, f):
         code = open(f, 'rb').read()
         for i in range(0, len(code), 2):
-            val = code[i] + (code[i+1]<<8)
+            val = code[i] + (code[i + 1] << 8)
             assert val < self.ROFF + self.NREG
-            self.mem[i//2] = val
+            self.mem[i // 2] = val
 
     def load_buffer(self, f_buf):
         self.buffer = open(f_buf, 'r').read()
@@ -32,7 +33,7 @@ class Synacor_VM():
         # at mem[5451] we could monitor memory reading and
         # set reg[7] as soon as we get there. Instead it's better
         # to just remove the check in the self-test.
-        self.mem[521] = self.mem[522] = self.mem[523] = 21 # noop
+        self.mem[521] = self.mem[522] = self.mem[523] = 21  # noop
 
     def activate_teleporter_check_bypass(self):
         # the code relevant for checking is
@@ -58,7 +59,7 @@ class Synacor_VM():
         return self.reg[0]
 
     # Check eighth register by re-implementing binary code. Returning r0
-    def cr7(self, r0=4, r1=1): # = mem[6027]
+    def cr7(self, r0=4, r1=1):  # = mem[6027]
         if r0:
             if r1:
                 return self.cr7(r0-1, self.cr7(r0, r1-1))
